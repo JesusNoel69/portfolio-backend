@@ -4,7 +4,7 @@ WORKDIR /webapp
 EXPOSE 80
 EXPOSE 5024
 
-COPY ./*.csproj ./
+COPY /Backend/Backend.csproj ./
 RUN dotnet restore
 
 COPY . .
