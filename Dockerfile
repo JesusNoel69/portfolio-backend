@@ -9,7 +9,7 @@ RUN dotnet restore
 
 # Copia el resto del código fuente y publica la aplicación
 WORKDIR /app
-COPY . .  # Copia el resto del código fuente
+COPY . .  # Copia todo el código fuente
 RUN dotnet publish Backend/Backend.csproj -c Release -o /app/publish
 
 # Etapa de ejecución
