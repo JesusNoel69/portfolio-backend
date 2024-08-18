@@ -1,16 +1,19 @@
+# Etapa de construcción
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
-WORKDIR /webapp
+WORKDIR /app
 
-EXPOSE 80
-EXPOSE 5024
-
-COPY /Backend/Backend.csproj ./
+# Copia el archivo .csproj y restaura las dependencias
+COPY Backend/Backend.csproj ./Backend/
+WORKDIR /app/Backend
 RUN dotnet restore
 
-COPY . .
-RUN dotnet publish -c Release -o publish
+# Copia el resto del código fuente y publica la aplicación
+WORKDIR /app
+COPY . .  # Copia el resto del código fuente
+RUN dotnet publish Backend/Backend.csproj -c Release -o /app/publish
 
-FROM  mcr.microsoft.com/dotnet/sdk:8.0
-WORKDIR /webapp
-COPY --from=build /webapp/publish .
-ENTRYPOINT [ "dotnet", "Backend.dll"]
+# Etapa de ejecución
+FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS runtime
+WORKDIR /app
+COPY --from=build /app/publish .
+ENTRYPOINT ["dotnet", "Backend.dll"]
