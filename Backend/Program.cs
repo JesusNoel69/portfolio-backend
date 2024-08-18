@@ -19,7 +19,7 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy(name : "AllowAnyOriginPolicy",
         builder =>
-        {builder.WithOrigins(Environment.GetEnvironmentVariable("PERMITED_URL")??"")
+        {builder.WithOrigins("https://master--portfolio-jesus-n.netlify.app")
             .AllowAnyHeader()
             .AllowAnyMethod();
         });
