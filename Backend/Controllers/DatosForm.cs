@@ -1,16 +1,8 @@
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Text.Json;
 using System.Text.Json.Nodes;
-using System.Text.Json.Serialization;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
-
+using dotenv.net;
+using Backend.SendEmail;
 namespace Backend.Controllers
 {
     //[EnableCors("AllowAnyOriginPolicy")]
@@ -19,10 +11,12 @@ namespace Backend.Controllers
     public class DatosFormController : Controller
     {
         private readonly ILogger<DatosFormController> _logger;
-        private readonly string key="AIzaSyDQhZgf_6KYm1zQVOLeGCrH5TkRWxH04sg";
+        private readonly string key;
         public DatosFormController(ILogger<DatosFormController> logger)
         {
             _logger = logger;
+            DotEnv.Load();
+            key=Environment.GetEnvironmentVariable("GOOGLE_MAPS_API_KEY")??"";
         }
         [HttpPost]
          public async Task<IActionResult> Post([FromBody] JsonObject dato){
@@ -30,6 +24,10 @@ namespace Backend.Controllers
             var data =  JsonConvert.DeserializeObject<MyData>(dato.ToString());
             Console.WriteLine(data?.name);
             Console.WriteLine(data?.message);
+            Console.WriteLine(this.key);
+
+            Email email = new Email(data?.name??"", data?.message??"");
+            email.SendEmail();
             return Ok(200);
         }
         [HttpGet(Name ="GetKey")]
